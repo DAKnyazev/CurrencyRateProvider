@@ -28,6 +28,6 @@ namespace CurrencyRateProvider.Common.DAL.Entities
         /// Количество (1, 10, 100, 1000...), используемое на торгах
         /// </summary>
         [Column("amount")]
-        public short Amount { get; set; }
+        public int Amount { get; set; }
     }
 }

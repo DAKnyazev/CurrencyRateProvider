@@ -3,15 +3,17 @@ using System;
 using CurrencyRateProvider.DbFiller.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CurrencyRateProvider.DbFiller.Migrations
 {
     [DbContext(typeof(RateMigrationsDbContext))]
-    partial class RateMigrationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180929113404_CurrencyAmountType")]
+    partial class CurrencyAmountType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

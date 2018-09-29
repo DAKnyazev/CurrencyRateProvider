@@ -24,7 +24,7 @@ namespace CurrencyRateProvider.Common.Services
             _dbContext = dbContext;
             _client = new RestClient(configuration["CNBService:HostUrl"]);
             _yearUrl = configuration["CNBService:YearPath"];
-            _relativeCurrency = GetOrInsert(configuration["RelativeCurrency:Code"], short.Parse(configuration["RelativeCurrency:Amount"])).Result;
+            _relativeCurrency = GetOrInsert(configuration["RelativeCurrency:Code"], int.Parse(configuration["RelativeCurrency:Amount"])).Result;
         }
 
         public async Task<bool> TryFill(int startYear, int endYear)
@@ -98,13 +98,13 @@ namespace CurrencyRateProvider.Common.Services
             for (var i = 1; i < headerColumns.Length; i++)
             {
                 var currency = headerColumns[i].Split(' ');
-                result.Add(await GetOrInsert(currency[1], short.Parse(currency[0])));
+                result.Add(await GetOrInsert(currency[1], int.Parse(currency[0])));
             }
 
             return result;
         }
 
-        private async Task<Currency> GetOrInsert(string code, short amount)
+        private async Task<Currency> GetOrInsert(string code, int amount)
         {
             var result = await _dbContext
                 .Set<Currency>()
