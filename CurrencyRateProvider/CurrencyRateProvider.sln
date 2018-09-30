@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyRateProvider.Common
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyRateProvider.Scheduler", "CurrencyRateProvider.Scheduler\CurrencyRateProvider.Scheduler.csproj", "{67D08F24-232E-48D3-8494-73F32E7DD936}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyRateProvider.WebApi", "CurrencyRateProvider.WebApi\CurrencyRateProvider.WebApi.csproj", "{0ED95635-AFF3-4FB1-B430-384321EBD2E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{67D08F24-232E-48D3-8494-73F32E7DD936}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67D08F24-232E-48D3-8494-73F32E7DD936}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67D08F24-232E-48D3-8494-73F32E7DD936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ED95635-AFF3-4FB1-B430-384321EBD2E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED95635-AFF3-4FB1-B430-384321EBD2E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED95635-AFF3-4FB1-B430-384321EBD2E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED95635-AFF3-4FB1-B430-384321EBD2E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

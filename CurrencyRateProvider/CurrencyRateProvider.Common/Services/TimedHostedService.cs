@@ -24,10 +24,10 @@ namespace CurrencyRateProvider.Common.Services
         {
             _logger = logger;
             _fillService = fillService;
-            _hour = int.Parse(configuration["LaunchSettings:StartHour"]);
-            _minutes = int.Parse(configuration["LaunchSettings:StartMinutes"]);
-            _retryDelayInMinutes = int.Parse(configuration["LaunchSettings:RetryDelayInMinutes"]);
-            _maxRetryCount = int.Parse(configuration["LaunchSettings:MaxRetryCount"]);
+            _hour = int.Parse(configuration["TimedHostedService:StartHour"]);
+            _minutes = int.Parse(configuration["TimedHostedService:StartMinutes"]);
+            _retryDelayInMinutes = int.Parse(configuration["TimedHostedService:RetryDelayInMinutes"]);
+            _maxRetryCount = int.Parse(configuration["TimedHostedService:MaxRetryCount"]);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
