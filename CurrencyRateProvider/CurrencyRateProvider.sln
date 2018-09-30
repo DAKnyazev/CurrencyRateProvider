@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyRateProvider.DbFiller", "CurrencyRateProvider.DbFiller\CurrencyRateProvider.DbFiller.csproj", "{3A834244-2362-4C21-AA82-5B516AB1EC9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyRateProvider.DbFiller", "CurrencyRateProvider.DbFiller\CurrencyRateProvider.DbFiller.csproj", "{3A834244-2362-4C21-AA82-5B516AB1EC9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyRateProvider.Common", "CurrencyRateProvider.Common\CurrencyRateProvider.Common.csproj", "{45110529-4B0E-4D6D-B320-6EC5AA6D41C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyRateProvider.Common", "CurrencyRateProvider.Common\CurrencyRateProvider.Common.csproj", "{45110529-4B0E-4D6D-B320-6EC5AA6D41C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyRateProvider.Scheduler", "CurrencyRateProvider.Scheduler\CurrencyRateProvider.Scheduler.csproj", "{67D08F24-232E-48D3-8494-73F32E7DD936}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{45110529-4B0E-4D6D-B320-6EC5AA6D41C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45110529-4B0E-4D6D-B320-6EC5AA6D41C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45110529-4B0E-4D6D-B320-6EC5AA6D41C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67D08F24-232E-48D3-8494-73F32E7DD936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67D08F24-232E-48D3-8494-73F32E7DD936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67D08F24-232E-48D3-8494-73F32E7DD936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67D08F24-232E-48D3-8494-73F32E7DD936}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
