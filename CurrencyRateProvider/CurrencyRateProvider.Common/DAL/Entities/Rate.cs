@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CurrencyRateProvider.Common.DAL.Entities
 {
@@ -26,7 +27,18 @@ namespace CurrencyRateProvider.Common.DAL.Entities
         [Column("relative_currency_id")]
         [ForeignKey("RelativeCurrency")]
         public short RelativeCurrencyId { get; set; }
-        public Currency RelativeCurrency { get; set; }
+
+        public Currency RelativeCurrency
+        {
+            get => _relativeCurrency;
+            set
+            {
+                RelativeCurrencyId = value.Id;
+                _relativeCurrency = value;
+            }
+        }
+
+        private Currency _relativeCurrency;
 
         /// <summary>
         /// Дата
@@ -46,6 +58,17 @@ namespace CurrencyRateProvider.Common.DAL.Entities
         [Column("currency_id")]
         [ForeignKey("Currency")]
         public short CurrencyId { get; set; }
-        public Currency Currency { get; set; }
+
+        public Currency Currency
+        {
+            get => _currency;
+            set
+            {
+                CurrencyId = value.Id;
+                _currency = value;
+            }
+        }
+
+        private Currency _currency;
     }
 }

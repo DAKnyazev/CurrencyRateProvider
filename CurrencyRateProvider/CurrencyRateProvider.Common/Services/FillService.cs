@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CurrencyRateProvider.Common.DAL.Entities;
@@ -187,6 +188,15 @@ namespace CurrencyRateProvider.Common.Services
 
         private async Task Insert(IEnumerable<Rate> rates)
         {
+            rates = rates
+                .Where(rate =>
+                    !_dbContext
+                        .Set<Rate>()
+                        .Any(x => x.RelativeCurrencyId == rate.RelativeCurrencyId
+                                  && x.CurrencyId == rate.CurrencyId
+                                  && x.Date.Year == rate.Date.Year
+                                  && x.Date.Month == rate.Date.Month
+                                  && x.Date.Day == rate.Date.Day));
             await _dbContext.Set<Rate>().AddRangeAsync(rates);
             _dbContext.SaveChanges();
         }
