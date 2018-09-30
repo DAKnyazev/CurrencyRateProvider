@@ -15,6 +15,11 @@ namespace CurrencyRateProvider.Common.Models.Report
             _costs = new List<decimal>();
         }
 
+        /// <summary>
+        /// Добавить стоимость
+        /// </summary>
+        /// <param name="cost">Стоимость</param>
+        /// <param name="amount">Количество</param>
         public void AddCost(decimal cost, int amount)
         {
             _costs.Add(cost / amount);
@@ -35,6 +40,10 @@ namespace CurrencyRateProvider.Common.Models.Report
         /// </summary>
         public decimal MedianCost => GetMedian();
 
+        /// <summary>
+        /// Получить медианную цену
+        /// </summary>
+        /// <returns></returns>
         private decimal GetMedian()
         {
             var halfIndex = _costs.Count / 2;

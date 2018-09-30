@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CurrencyRateProvider.Common.Interfaces;
-using CurrencyRateProvider.Common.Models;
-using CurrencyRateProvider.Common.Models.Report;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace CurrencyRateProvider.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    /// <summary>
+    /// Контроллер отчетов по курсам валют
+    /// </summary>
+    [Route("api/rate/report")]
     [ApiController]
-    public class RateController : ControllerBase
+    public class RateReportController : ControllerBase
     {
         private readonly IReportService _reportService;
 
-        public RateController(IReportService reportService)
+        public RateReportController(IReportService reportService)
         {
             _reportService = reportService;
         }
 
+        /// <summary>
+        /// Получить отчет по курсам валют
+        /// </summary>
+        /// <param name="year">Год</param>
+        /// <param name="month">Месяц (если не указан, то отчет строиться за весь год)</param>
+        /// <param name="format">Формат</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<string>> Get(int year, int? month, string format)
         {

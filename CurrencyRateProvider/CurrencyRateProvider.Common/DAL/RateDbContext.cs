@@ -3,14 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyRateProvider.Common.DAL
 {
+    /// <inheritdoc />
     public class RateDbContext : DbContext
     {
         public RateDbContext(DbContextOptions options) : base(options)
         {
         }
 
+        /// <summary>
+        /// Валюты
+        /// </summary>
         public DbSet<Currency> Currencies { get; set; }
 
+        /// <summary>
+        /// Курсы валют по дням
+        /// </summary>
         public DbSet<Rate> Rates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

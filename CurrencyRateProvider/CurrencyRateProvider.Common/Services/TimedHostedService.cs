@@ -8,6 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace CurrencyRateProvider.Common.Services
 {
+    /// <summary>
+    /// Сервис для выполнения периодической загрузки данных о курсах валют
+    /// </summary>
     public class TimedHostedService : IHostedService, IDisposable
     {
         private readonly ILogger _logger;
@@ -30,6 +33,7 @@ namespace CurrencyRateProvider.Common.Services
             _maxRetryCount = int.Parse(configuration["TimedHostedService:MaxRetryCount"]);
         }
 
+        /// <inheritdoc />
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Timed Background Service is starting.");
@@ -44,6 +48,7 @@ namespace CurrencyRateProvider.Common.Services
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Timed Background Service is stopping.");
@@ -53,11 +58,16 @@ namespace CurrencyRateProvider.Common.Services
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _timer?.Dispose();
         }
 
+        /// <summary>
+        /// Выполнить периодическое задание
+        /// </summary>
+        /// <param name="state">Состояние (не используется)</param>
         private async void DoWork(object state)
         {
             _logger.LogInformation("Timed Background Service is working.");
@@ -65,8 +75,15 @@ namespace CurrencyRateProvider.Common.Services
             var startTimeSpan = GetNextStartTimeInMinutes(await _fillService.TryFill(DateTime.Now.Date));
 
             _timer.Change(startTimeSpan, startTimeSpan);
+
+            _logger.LogInformation("Timed Background Service is finished.");
         }
 
+        /// <summary>
+        /// Получение времени следующего выполнения задания
+        /// </summary>
+        /// <param name="isSuccessful"></param>
+        /// <returns></returns>
         private TimeSpan GetNextStartTimeInMinutes(bool isSuccessful)
         {
             if (!isSuccessful)

@@ -17,7 +17,27 @@ namespace CurrencyRateProvider.Common.Models.Report
                 RateStatistics.Add(currencyCode, new RateStatistic());
             }
         }
+        
+        /// <summary>
+        /// День начала рабочей недели
+        /// </summary>
+        public int StartDay { get; set; }
 
+        /// <summary>
+        /// День окончания рабочей недели
+        /// </summary>
+        public int EndDay { get; set; }
+
+        /// <summary>
+        /// Статистика по валютам
+        /// </summary>
+        public Dictionary<string, RateStatistic> RateStatistics { get; set; }
+
+        /// <summary>
+        /// Добавить статистику по валютам
+        /// </summary>
+        /// <param name="rates"></param>
+        /// <param name="currencies"></param>
         public void AddStatistic(IList<Rate> rates, IList<Currency> currencies)
         {
             foreach (var rateStatistic in RateStatistics)
@@ -33,20 +53,5 @@ namespace CurrencyRateProvider.Common.Models.Report
                 }
             }
         }
-
-        /// <summary>
-        /// День начала рабочей недели
-        /// </summary>
-        public int StartDay { get; set; }
-
-        /// <summary>
-        /// День окончания рабочей недели
-        /// </summary>
-        public int EndDay { get; set; }
-
-        /// <summary>
-        /// Статистика по валютам
-        /// </summary>
-        public Dictionary<string, RateStatistic> RateStatistics { get; set; }
     }
 }

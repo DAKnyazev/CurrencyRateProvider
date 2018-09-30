@@ -6,19 +6,19 @@ namespace CurrencyRateProvider.Common.Services
 {
     public abstract class BaseCurrencyService
     {
-        protected readonly DbContext _dbContext;
-        protected readonly Currency _relativeCurrency;
+        protected readonly DbContext DbContext;
+        protected readonly Currency RelativeCurrency;
 
         protected BaseCurrencyService(DbContext dbContext, string relativeCurrencyCode, int relativeCurrencyAmount)
         {
-            _dbContext = dbContext;
-            _relativeCurrency = GetOrInsert(relativeCurrencyCode, relativeCurrencyAmount).Result;
+            DbContext = dbContext;
+            RelativeCurrency = GetOrInsert(relativeCurrencyCode, relativeCurrencyAmount).Result;
         }
 
         protected async Task<Currency> GetOrInsert(string code, int amount)
         {
             code = code.ToUpper();
-            var result = await _dbContext
+            var result = await DbContext
                 .Set<Currency>()
                 .FirstOrDefaultAsync(x => x.Code == code
                                           && x.Amount == amount);
@@ -28,13 +28,13 @@ namespace CurrencyRateProvider.Common.Services
                 return result;
             }
 
-            result = (await _dbContext.Set<Currency>().AddAsync(new Currency
+            result = (await DbContext.Set<Currency>().AddAsync(new Currency
             {
                 Amount = amount,
                 Code = code
             })).Entity;
 
-            _dbContext.SaveChanges();
+            DbContext.SaveChanges();
 
             return result;
         }

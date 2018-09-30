@@ -33,6 +33,7 @@ namespace CurrencyRateProvider.Common.Services
             _responseDateFormat = "dd.MMM yyyy";
         }
 
+        /// <inheritdoc />
         public async Task<bool> TryFill(int startYear, int endYear)
         {
             try
@@ -50,6 +51,7 @@ namespace CurrencyRateProvider.Common.Services
             return true;
         }
 
+        /// <inheritdoc />
         public async Task<bool> TryFill(DateTime date)
         {
             try
@@ -64,6 +66,10 @@ namespace CurrencyRateProvider.Common.Services
             return true;
         }
 
+        /// <summary>
+        /// Получить данные о курсах валют за выбранный год
+        /// </summary>
+        /// <param name="year">Год</param>
         private async Task<List<Rate>> GetCurrencyRates(int year)
         {
             var result = new List<Rate>();
@@ -74,7 +80,7 @@ namespace CurrencyRateProvider.Common.Services
             var response = _client.Execute(request);
 
             var rows = Regex.Split(response.Content, "\r\n|\r|\n");
-            var currencies = await GetHeaderCurrencies(rows[0]);
+            var currencies = await GetCurrencies(rows[0]);
 
             for (var i = 1; i < rows.Length; i++)
             {
@@ -85,7 +91,7 @@ namespace CurrencyRateProvider.Common.Services
 
                 if (rows[i].Trim().StartsWith("Date", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    currencies = await GetHeaderCurrencies(rows[i]);
+                    currencies = await GetCurrencies(rows[i]);
                     continue;
                 }
                 var columns = rows[i].Split("|");
@@ -98,7 +104,7 @@ namespace CurrencyRateProvider.Common.Services
                         Date = date,
                         Cost = decimal.Parse(columns[j], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture),
                         Currency = currencies[j - 1],
-                        RelativeCurrency = _relativeCurrency
+                        RelativeCurrency = RelativeCurrency
                     });
                 }
             }
@@ -106,6 +112,10 @@ namespace CurrencyRateProvider.Common.Services
             return result;
         }
 
+        /// <summary>
+        /// Получить данные о курсах валют за выбранный день
+        /// </summary>
+        /// <param name="date">День</param>
         private async Task<List<Rate>> GetCurrencyRates(DateTime date)
         {
             var result = new List<Rate>();
@@ -142,14 +152,19 @@ namespace CurrencyRateProvider.Common.Services
                     Date = date,
                     Cost = decimal.Parse(columns[4], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture),
                     Currency = await GetOrInsert(columns[3], int.Parse(columns[2])),
-                    RelativeCurrency = _relativeCurrency
+                    RelativeCurrency = RelativeCurrency
                 });
             }
 
             return result;
         }
 
-        private async Task<List<Currency>> GetHeaderCurrencies(string header)
+        /// <summary>
+        /// Получение списка валют из заголовка годового ответа
+        /// </summary>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        private async Task<List<Currency>> GetCurrencies(string header)
         {
             var headerColumns = header.Split("|");
             var result = new List<Currency>(headerColumns.Length - 1);
@@ -162,19 +177,23 @@ namespace CurrencyRateProvider.Common.Services
             return result;
         }
         
+        /// <summary>
+        /// Вставка уникальных курсов валют
+        /// </summary>
+        /// <param name="rates">Список курсов валют</param>
         private async Task Insert(IEnumerable<Rate> rates)
         {
             rates = rates
                 .Where(rate =>
-                    !_dbContext
+                    !DbContext
                         .Set<Rate>()
                         .Any(x => x.RelativeCurrencyId == rate.RelativeCurrencyId
                                   && x.CurrencyId == rate.CurrencyId
                                   && x.Date.Year == rate.Date.Year
                                   && x.Date.Month == rate.Date.Month
                                   && x.Date.Day == rate.Date.Day));
-            await _dbContext.Set<Rate>().AddRangeAsync(rates);
-            _dbContext.SaveChanges();
+            await DbContext.Set<Rate>().AddRangeAsync(rates);
+            DbContext.SaveChanges();
         }
     }
 }
