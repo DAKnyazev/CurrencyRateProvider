@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CurrencyRateProvider.Common.DAL.Entities;
+using CurrencyRateProvider.Common.Extentions;
 using CurrencyRateProvider.Common.Interfaces;
 using CurrencyRateProvider.Common.Models.Report;
 using Microsoft.EntityFrameworkCore;
@@ -106,12 +107,19 @@ namespace CurrencyRateProvider.Common.Services
 
                 if (currentDate.Date != dateGroup.Key.Date)
                 {
-                    result.Add(currentWeekReport);
-                    currentDate = dateGroup.Key.Date;
-                    currentWeekReport = new WeeklyRateReport(_currencyCodes)
+                    if (currentDate.IsWeekEquals(dateGroup.Key))
                     {
-                        StartDay = currentDate.Day
-                    };
+                        currentDate = dateGroup.Key.Date;
+                    }
+                    else
+                    {
+                        result.Add(currentWeekReport);
+                        currentDate = dateGroup.Key.Date;
+                        currentWeekReport = new WeeklyRateReport(_currencyCodes)
+                        {
+                            StartDay = currentDate.Day
+                        };
+                    }
                 }
 
                 currentWeekReport.AddStatistic(dateGroup.ToList(), _currencies);
