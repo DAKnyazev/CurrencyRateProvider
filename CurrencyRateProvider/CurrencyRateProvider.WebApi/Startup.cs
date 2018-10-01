@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace CurrencyRateProvider.WebApi
 {
@@ -27,6 +28,11 @@ namespace CurrencyRateProvider.WebApi
             services.AddDbContext<RateDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("RateUser")));
             services.AddScoped<DbContext, RateDbContext>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddLogging(configure =>
+            {
+                configure.AddConsole();
+                configure.AddDebug();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

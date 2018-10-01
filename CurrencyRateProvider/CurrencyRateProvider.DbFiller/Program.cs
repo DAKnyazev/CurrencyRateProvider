@@ -6,6 +6,7 @@ using CurrencyRateProvider.Common.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace CurrencyRateProvider.DbFiller
 {
@@ -18,7 +19,7 @@ namespace CurrencyRateProvider.DbFiller
 
             var serviceProvider = services.BuildServiceProvider();
             var fillService = serviceProvider.GetRequiredService<IFillService>();
-            if (fillService.TryFill(1998, 2018).Result)
+            if (fillService.TryFill(2017, 2018).Result)
             {
                 Console.WriteLine("Finished successfully");
             }
@@ -33,6 +34,11 @@ namespace CurrencyRateProvider.DbFiller
         public static void ConfigureServices(IServiceCollection services)
         {
             var configuration = GetConfiguration();
+            services.AddLogging(configure =>
+            {
+                //configure.AddConsole();
+                configure.AddDebug();
+            });
             services.AddDbContext<RateDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("RateUser")));
             services.AddSingleton<DbContext, RateDbContext>();
             services.AddSingleton<IFillService, FillService>();

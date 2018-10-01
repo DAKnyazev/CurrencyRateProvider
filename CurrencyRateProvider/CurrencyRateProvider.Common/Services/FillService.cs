@@ -8,43 +8,49 @@ using CurrencyRateProvider.Common.DAL.Entities;
 using CurrencyRateProvider.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using RestSharp;
 
 namespace CurrencyRateProvider.Common.Services
 {
     public class FillService : BaseCurrencyService, IFillService
     {
+        private readonly ILogger _logger;
         private readonly IRestClient _client;
         private readonly string _yearUrl;
         private readonly string _dailyUrl;
         private readonly string _requestDateFormat;
         private readonly string _responseDateFormat;
 
-        public FillService(DbContext dbContext, IConfiguration configuration) 
+        public FillService(DbContext dbContext, IConfiguration configuration, ILogger<FillService> logger) 
             : base(
                 dbContext,
-                configuration["CNBService:RelativeCurrency:Code"],
-                int.Parse(configuration["CNBService:RelativeCurrency:Amount"]))
+                configuration["FillService:RelativeCurrency:Code"],
+                int.Parse(configuration["FillService:RelativeCurrency:Amount"]))
         {
-            _client = new RestClient(configuration["CNBService:HostUrl"]);
-            _yearUrl = configuration["CNBService:YearPath"];
-            _dailyUrl = configuration["CNBService:DailyPath"];
+            _client = new RestClient(configuration["FillService:HostUrl"]);
+            _yearUrl = configuration["FillService:YearPath"];
+            _dailyUrl = configuration["FillService:DailyPath"];
             _requestDateFormat = "dd.MM.yyyy";
             _responseDateFormat = "dd.MMM yyyy";
+            _logger = logger;
         }
 
         /// <inheritdoc />
         public async Task<bool> TryFill(int startYear, int endYear)
         {
+            var year = 0;
             try
             {
-                for (var year = startYear; year <= endYear; year++)
+                for (year = startYear; year <= endYear; year++)
                 {
-                    await Insert(await GetCurrencyRates(year));
+                    var count = await Insert(await GetCurrencyRates(year));
+                    _logger.LogInformation($"TryFill method: {count} rate rows inserted.");
                 }
             }
             catch (Exception exception)
             {
+                _logger.LogError(exception, $"TryFill method failed at {year} year.", null);
                 return false;
             }
 
@@ -56,10 +62,12 @@ namespace CurrencyRateProvider.Common.Services
         {
             try
             {
-                await Insert(await GetCurrencyRates(date));
+                var count = await Insert(await GetCurrencyRates(date));
+                _logger.LogInformation($"TryFill method: {count} rate rows inserted.");
             }
             catch (Exception exception)
             {
+                _logger.LogError(exception, $"TryFill method failed at {date:_requestDateFormat} date.", null);
                 return false;
             }
 
@@ -128,11 +136,6 @@ namespace CurrencyRateProvider.Common.Services
             var rows = Regex.Split(response.Content, "\r\n|\r|\n");
             var responseDate = DateTime.ParseExact(rows[0].Substring(0, rows[0].IndexOf('#')).Trim(), _responseDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None);
 
-            if (responseDate.Date != date.Date)
-            {
-                return result;
-            }
-
             if (rows.Length < 2)
             {
                 return result;
@@ -149,7 +152,7 @@ namespace CurrencyRateProvider.Common.Services
 
                 result.Add(new Rate
                 {
-                    Date = date,
+                    Date = responseDate.Date,
                     Cost = decimal.Parse(columns[4], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture),
                     Currency = await GetOrInsert(columns[3], int.Parse(columns[2])),
                     RelativeCurrency = RelativeCurrency
@@ -181,7 +184,7 @@ namespace CurrencyRateProvider.Common.Services
         /// Вставка уникальных курсов валют
         /// </summary>
         /// <param name="rates">Список курсов валют</param>
-        private async Task Insert(IEnumerable<Rate> rates)
+        private async Task<int> Insert(IEnumerable<Rate> rates)
         {
             rates = rates
                 .Where(rate =>
@@ -191,9 +194,12 @@ namespace CurrencyRateProvider.Common.Services
                                   && x.CurrencyId == rate.CurrencyId
                                   && x.Date.Year == rate.Date.Year
                                   && x.Date.Month == rate.Date.Month
-                                  && x.Date.Day == rate.Date.Day));
+                                  && x.Date.Day == rate.Date.Day))
+                .ToList();
             await DbContext.Set<Rate>().AddRangeAsync(rates);
             DbContext.SaveChanges();
+
+            return rates.Count();
         }
     }
 }
