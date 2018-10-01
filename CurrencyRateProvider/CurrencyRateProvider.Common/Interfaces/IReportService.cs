@@ -11,6 +11,6 @@ namespace CurrencyRateProvider.Common.Interfaces
         /// </summary>
         /// <param name="start">Начальный месяц/год отчетов</param>
         /// <param name="end">Последний месяц/год отчетов</param>
-        Task<RateReport> GetReport(DateTime start, DateTime end);
+        Task<RateReport> GetReportAsync(DateTime start, DateTime end);
     }
 }

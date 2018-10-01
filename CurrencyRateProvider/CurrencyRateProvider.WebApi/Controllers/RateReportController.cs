@@ -30,7 +30,7 @@ namespace CurrencyRateProvider.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<string>> Get(int year, int? month, string format)
         {
-            var report = await _reportService.GetReport(
+            var report = await _reportService.GetReportAsync(
                 new DateTime(year, month ?? 1, 1),
                 new DateTime(year, month ?? 12, DateTime.DaysInMonth(year, month ?? 12)));
 

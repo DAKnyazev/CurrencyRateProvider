@@ -19,7 +19,7 @@ namespace CurrencyRateProvider.DbFiller
 
             var serviceProvider = services.BuildServiceProvider();
             var fillService = serviceProvider.GetRequiredService<IFillService>();
-            if (fillService.TryFill(2017, 2018).Result)
+            if (fillService.TryFillAsync(2017, 2018).Result)
             {
                 Console.WriteLine("Finished successfully");
             }

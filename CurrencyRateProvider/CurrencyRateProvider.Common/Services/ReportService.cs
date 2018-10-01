@@ -26,11 +26,11 @@ namespace CurrencyRateProvider.Common.Services
         }
 
         /// <inheritdoc />
-        public async Task<RateReport> GetReport(DateTime start, DateTime end)
+        public async Task<RateReport> GetReportAsync(DateTime start, DateTime end)
         {
             return new RateReport
             {
-                MonthlyReports = await GetMonthlyReports(start.Date, end.Date)
+                MonthlyReports = await GetMonthlyReportsAsync(start.Date, end.Date)
             };
         }
 
@@ -39,14 +39,14 @@ namespace CurrencyRateProvider.Common.Services
         /// </summary>
         /// <param name="start">Начальный месяц/год отчетов</param>
         /// <param name="end">Последний месяц/год отчетов</param>
-        private async Task<List<MonthlyRateReport>> GetMonthlyReports(DateTime start, DateTime end)
+        private async Task<List<MonthlyRateReport>> GetMonthlyReportsAsync(DateTime start, DateTime end)
         {
             var result = new List<MonthlyRateReport>();
             var currentDate = start.Date;
 
             while (currentDate <= end.Date)
             {
-                result.Add(await GetMonthlyReport(currentDate));
+                result.Add(await GetMonthlyReportAsync(currentDate));
                 currentDate = currentDate.AddMonths(1);
             }
 
@@ -57,7 +57,7 @@ namespace CurrencyRateProvider.Common.Services
         /// Сформировать месячный отчет
         /// </summary>
         /// <param name="date">Месяц/год отчета</param>
-        private async Task<MonthlyRateReport> GetMonthlyReport(DateTime date)
+        private async Task<MonthlyRateReport> GetMonthlyReportAsync(DateTime date)
         {
             var result = new MonthlyRateReport(date);
             var dateGroups = await DbContext

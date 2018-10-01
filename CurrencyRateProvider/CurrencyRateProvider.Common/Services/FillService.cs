@@ -37,20 +37,20 @@ namespace CurrencyRateProvider.Common.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> TryFill(int startYear, int endYear)
+        public async Task<bool> TryFillAsync(int startYear, int endYear)
         {
             var year = 0;
             try
             {
                 for (year = startYear; year <= endYear; year++)
                 {
-                    var count = await Insert(await GetCurrencyRates(year));
-                    _logger.LogInformation($"TryFill method: {count} rate rows inserted.");
+                    var count = await InsertAsync(await GetCurrencyRatesAsync(year));
+                    _logger.LogInformation($"TryFillAsync method: {count} rate rows inserted.");
                 }
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"TryFill method failed at {year} year.", null);
+                _logger.LogError(exception, $"TryFillAsync method failed at {year} year.", null);
                 return false;
             }
 
@@ -58,16 +58,16 @@ namespace CurrencyRateProvider.Common.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> TryFill(DateTime date)
+        public async Task<bool> TryFillAsync(DateTime date)
         {
             try
             {
-                var count = await Insert(await GetCurrencyRates(date));
-                _logger.LogInformation($"TryFill method: {count} rate rows inserted.");
+                var count = await InsertAsync(await GetCurrencyRatesAsync(date));
+                _logger.LogInformation($"TryFillAsync method: {count} rate rows inserted.");
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"TryFill method failed at {date:_requestDateFormat} date.", null);
+                _logger.LogError(exception, $"TryFillAsync method failed at {date:_requestDateFormat} date.", null);
                 return false;
             }
 
@@ -78,7 +78,7 @@ namespace CurrencyRateProvider.Common.Services
         /// Получить данные о курсах валют за выбранный год
         /// </summary>
         /// <param name="year">Год</param>
-        private async Task<List<Rate>> GetCurrencyRates(int year)
+        private async Task<List<Rate>> GetCurrencyRatesAsync(int year)
         {
             var result = new List<Rate>();
 
@@ -88,7 +88,7 @@ namespace CurrencyRateProvider.Common.Services
             var response = _client.Execute(request);
 
             var rows = Regex.Split(response.Content, "\r\n|\r|\n");
-            var currencies = await GetCurrencies(rows[0]);
+            var currencies = await GetCurrenciesAsync(rows[0]);
 
             for (var i = 1; i < rows.Length; i++)
             {
@@ -99,7 +99,7 @@ namespace CurrencyRateProvider.Common.Services
 
                 if (rows[i].Trim().StartsWith("Date", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    currencies = await GetCurrencies(rows[i]);
+                    currencies = await GetCurrenciesAsync(rows[i]);
                     continue;
                 }
                 var columns = rows[i].Split("|");
@@ -124,7 +124,7 @@ namespace CurrencyRateProvider.Common.Services
         /// Получить данные о курсах валют за выбранный день
         /// </summary>
         /// <param name="date">День</param>
-        private async Task<List<Rate>> GetCurrencyRates(DateTime date)
+        private async Task<List<Rate>> GetCurrencyRatesAsync(DateTime date)
         {
             var result = new List<Rate>();
 
@@ -154,7 +154,7 @@ namespace CurrencyRateProvider.Common.Services
                 {
                     Date = responseDate.Date,
                     Cost = decimal.Parse(columns[4], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture),
-                    Currency = await GetOrInsert(columns[3], int.Parse(columns[2])),
+                    Currency = await GetOrInsertAsync(columns[3], int.Parse(columns[2])),
                     RelativeCurrency = RelativeCurrency
                 });
             }
@@ -167,14 +167,14 @@ namespace CurrencyRateProvider.Common.Services
         /// </summary>
         /// <param name="header"></param>
         /// <returns></returns>
-        private async Task<List<Currency>> GetCurrencies(string header)
+        private async Task<List<Currency>> GetCurrenciesAsync(string header)
         {
             var headerColumns = header.Split("|");
             var result = new List<Currency>(headerColumns.Length - 1);
             for (var i = 1; i < headerColumns.Length; i++)
             {
                 var currency = headerColumns[i].Split(' ');
-                result.Add(await GetOrInsert(currency[1], int.Parse(currency[0])));
+                result.Add(await GetOrInsertAsync(currency[1], int.Parse(currency[0])));
             }
 
             return result;
@@ -184,7 +184,7 @@ namespace CurrencyRateProvider.Common.Services
         /// Вставка уникальных курсов валют
         /// </summary>
         /// <param name="rates">Список курсов валют</param>
-        private async Task<int> Insert(IEnumerable<Rate> rates)
+        private async Task<int> InsertAsync(IEnumerable<Rate> rates)
         {
             rates = rates
                 .Where(rate =>

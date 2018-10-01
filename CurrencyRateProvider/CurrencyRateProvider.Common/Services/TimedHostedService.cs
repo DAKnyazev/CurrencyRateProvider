@@ -40,7 +40,7 @@ namespace CurrencyRateProvider.Common.Services
             var startTimeSpan = GetNextStartTimeInMinutes(true);
 
             _timer = new Timer(
-                DoWork, 
+                DoWorkAsync, 
                 null,
                 startTimeSpan,
                 startTimeSpan);
@@ -68,11 +68,11 @@ namespace CurrencyRateProvider.Common.Services
         /// Выполнить периодическое задание
         /// </summary>
         /// <param name="state">Состояние (не используется)</param>
-        private async void DoWork(object state)
+        private async void DoWorkAsync(object state)
         {
             _logger.LogInformation("Timed Background Service is working.");
 
-            var startTimeSpan = GetNextStartTimeInMinutes(await _fillService.TryFill(DateTime.Now.Date));
+            var startTimeSpan = GetNextStartTimeInMinutes(await _fillService.TryFillAsync(DateTime.Now.Date));
 
             _timer.Change(startTimeSpan, startTimeSpan);
 

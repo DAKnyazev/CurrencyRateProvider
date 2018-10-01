@@ -11,13 +11,13 @@ namespace CurrencyRateProvider.Common.Interfaces
         /// <param name="startYear">Начальный год (включительно)</param>
         /// <param name="endYear">Конечный год (включительно)</param>
         /// <returns></returns>
-        Task<bool> TryFill(int startYear, int endYear);
+        Task<bool> TryFillAsync(int startYear, int endYear);
 
         /// <summary>
         /// Загрузить в БД данные о курсах валют за выбранный день
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        Task<bool> TryFill(DateTime date);
+        Task<bool> TryFillAsync(DateTime date);
     }
 }

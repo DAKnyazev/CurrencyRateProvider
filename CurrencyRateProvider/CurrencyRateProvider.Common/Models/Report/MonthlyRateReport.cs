@@ -47,7 +47,13 @@ namespace CurrencyRateProvider.Common.Models.Report
             builder.AppendLine("Week periods:");
             foreach (var report in WeeklyReports)
             {
-                builder.Append(report.StartDay).Append("...").Append(report.EndDay).Append(": ");
+                builder.Append(report.StartDay);
+                if (report.StartDay != report.EndDay)
+                {
+                    builder.Append("...").Append(report.EndDay);
+                }
+                builder.Append(": ");
+
                 foreach (var statistic in report.RateStatistics)
                 {
                     builder

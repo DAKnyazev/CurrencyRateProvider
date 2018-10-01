@@ -12,10 +12,10 @@ namespace CurrencyRateProvider.Common.Services
         protected BaseCurrencyService(DbContext dbContext, string relativeCurrencyCode, int relativeCurrencyAmount)
         {
             DbContext = dbContext;
-            RelativeCurrency = GetOrInsert(relativeCurrencyCode, relativeCurrencyAmount).Result;
+            RelativeCurrency = GetOrInsertAsync(relativeCurrencyCode, relativeCurrencyAmount).Result;
         }
 
-        protected async Task<Currency> GetOrInsert(string code, int amount)
+        protected async Task<Currency> GetOrInsertAsync(string code, int amount)
         {
             code = code.ToUpper();
             var result = await DbContext
