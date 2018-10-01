@@ -35,13 +35,15 @@ namespace CurrencyRateProvider.Common.Models.Report
 
         public override string ToString()
         {
-            if (!WeeklyReports.Any())
-            {
-                return string.Empty;
-            }
-
             var builder = new StringBuilder();
             builder.Append("Year: ").Append(Year).Append(", month: ").AppendLine(MonthName);
+            if (!WeeklyReports.Any())
+            {
+                builder.AppendLine("No data.");
+                builder.AppendLine();
+
+                return builder.ToString();
+            }
             builder.AppendLine("Week periods:");
             foreach (var report in WeeklyReports)
             {
